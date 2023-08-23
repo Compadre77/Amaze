@@ -61,7 +61,7 @@ public class Amaze extends PApplet {
     int cellSize = 30;
 
     public void settings() {
-        size(600, 800);
+        size(gridSize, gridSize);
     }
 
     public void setup() {
