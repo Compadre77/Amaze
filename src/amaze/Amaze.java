@@ -1,6 +1,7 @@
 package amaze;
 
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
@@ -13,12 +14,19 @@ public class Amaze extends PApplet {
     }
 
     PImage playerImg;
+    PFont f;
+
     int playerX, playerY;
     int speed = 30;
     int playerSize = 30;
     int flashLight = 3;
     int vision = 4;
     int key = 5;
+
+    boolean start = false;
+    boolean reset = false;
+    boolean startButtonPressed = false;
+    boolean resetButtonPressed = false;
 
 
 
@@ -52,11 +60,12 @@ public class Amaze extends PApplet {
     int cellSize = 30;
 
     public void settings() {
-        size(600, 600);
+        size(600, 800);
     }
 
     public void setup() {
         playerImg = loadImage("./ressources/knight.png");
+        f = createFont("Arial", 16, true);
         playerImg.resize(playerSize, 0);
         playerX = 1;
         playerY = 30;
@@ -103,12 +112,54 @@ public class Amaze extends PApplet {
         fill(255);
         rect(playerX+5,playerY+5,playerSize-15,playerSize-15);
         image(playerImg, playerX, playerY);
+        if (start) {
+            textFont(f, 16);
+            fill(0);
+            text("", 190, 650);
+        } else {
+            textFont(f, 16);
+            fill(0);
+            text("Um zu spielen, klicke auf \"Start\"", 190, 650);
+        }
+
+        if(reset){
+            playerX = 1;
+            playerY = 30;
+        }
+
+        //Start Button
+        if (startButtonPressed) {
+            fill(34, 139, 34, 100);
+        } else {
+            fill(34, 139, 34);
+        }
+        rect(150, 700, 100, 40, 10, 10, 10, 10);
+        fill(0, 0, 0);
+        text("Start", 180, 725);
+
+
+        //End Button
+        if (resetButtonPressed) {
+            fill(178, 34, 34, 100);
+        } else {
+            fill(178, 34, 34);
+        }
+        rect(350, 700, 100, 40, 10, 10, 10, 10);
+        fill(0, 0, 0);
+        text("Reset", 380, 725);
 
         playerX = constrain(playerX, 0, width - playerImg.width);
         playerY = constrain(playerY, 0, height - playerImg.height);
     }
 
     public void keyPressed(){
+        if (!start) {
+            return;
+        }
+
+        if (reset) {
+            return;
+        }
 
         try {
             if (keyCode == 37) {   //left
@@ -134,6 +185,34 @@ public class Amaze extends PApplet {
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             //ignored
+        }
+    }
+
+    public void mousePressed() {
+        if (mouseX > 150 && mouseX < 250 && mouseY > 700 && mouseY < 740) {
+            startButtonPressed = true;
+            redraw();
+        }
+        if (mouseX > 350 && mouseX < 450 && mouseY > 700 && mouseY < 740) {
+            resetButtonPressed = true;
+            redraw();
+        }
+    }
+
+    public void mouseReleased() {
+        startButtonPressed = false;
+        resetButtonPressed = false;
+        redraw();
+    }
+
+    public void mouseClicked() {
+        if (mouseX > 150 && mouseX < 250 && mouseY > 700 && mouseY < 740) {
+            start = true;
+            redraw();
+        }
+        if (mouseX > 350 && mouseX < 450 && mouseY > 700 && mouseY < 740) {
+            reset = true;
+            redraw();
         }
     }
 }
