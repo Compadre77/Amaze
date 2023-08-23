@@ -70,8 +70,7 @@ public class Amaze extends PApplet {
     }
 
     public void setup() {
-        noLoop(); // Draw the maze only once
-        playerImg = loadImage("./data/knight.png");
+        playerImg = loadImage("./ressources/knight.png");
         playerImg.resize(playerSize, 0);
         playerX = 0;
         playerY = 30;
@@ -103,21 +102,29 @@ public class Amaze extends PApplet {
         rect(playerX, playerY, playerSize, playerSize);
         image(playerImg, playerX, playerY);
 
-        if (keyPressed) {
-            if (keyCode == LEFT) {
-                playerX -= speed; // Move left
-            } else if (keyCode == RIGHT) {
-                playerX += speed; // Move right
-            } else if (keyCode == UP) {
-                playerY -= speed; // Move up
-            } else if (keyCode == DOWN) {
-                playerY += speed; // Move down
-            }
-        }
         playerX = constrain(playerX, 0, width - playerImg.width);
         playerY = constrain(playerY, 0, height - playerImg.height);
-
     }
+
+    public void keyPressed(){
+        switch (keyCode){
+            case 37:  //left
+                playerX -= speed;
+                break; // Add a break statement to exit the switch case
+            case 39:  //right
+                playerX += speed;
+                break;
+            case 38:  //up
+                playerY -= speed;
+                break;
+            case 40:  //down
+                playerY += speed;
+                break;
+        }
+    }
+
+
+
 /*
     public void keyPressed() {
         if (keyCode == UP) {
