@@ -12,7 +12,7 @@ public class Amaze extends PApplet {
 
     PImage playerImg;
     int playerX, playerY;
-    int speed = 2;
+    int speed = 30;
     int playerSize = 30;
     PGraphics spotlight;
     /*int[][] maze = {
@@ -72,7 +72,7 @@ public class Amaze extends PApplet {
     public void setup() {
         playerImg = loadImage("./ressources/knight.png");
         playerImg.resize(playerSize, 0);
-        playerX = 0;
+        playerX = 1;
         playerY = 30;
 
         spotlight = createGraphics(width, height);
@@ -99,7 +99,7 @@ public class Amaze extends PApplet {
         //ellipse(playerX + playerImg.width / 2, playerY + playerImg.height/2, 100, 100);
 
         fill(255);
-        rect(playerX, playerY, playerSize, playerSize);
+        rect(playerX+5,playerY+5,playerSize-15,playerSize-15);
         image(playerImg, playerX, playerY);
 
         playerX = constrain(playerX, 0, width - playerImg.width);
@@ -107,21 +107,35 @@ public class Amaze extends PApplet {
     }
 
     public void keyPressed(){
-        switch (keyCode){
-            case 37:  //left
-                playerX -= speed;
-                break; // Add a break statement to exit the switch case
-            case 39:  //right
-                playerX += speed;
-                break;
-            case 38:  //up
-                playerY -= speed;
-                break;
-            case 40:  //down
-                playerY += speed;
-                break;
+        try {
+            if (keyCode == 37) {
+                if (playerX > 0 && playerX <600 && maze[playerY/30][(playerX/30)-1]) {
+                    playerX -= speed; // Move left
+                    delay(200);
+                }
+            } else if (keyCode == 39) {
+                if (playerX > 0 && playerX <600 && maze[playerY/30][(playerX/30)+1]) {
+                    playerX += speed; // Move right
+                    delay(200);
+                }
+            } else if (keyCode == 38) {
+                if (playerY > 0 && playerY <600 && maze[(playerY/30)-1][playerX/30]) {
+                    playerY -= speed; // Move up
+                    delay(200);
+                }
+            } else if (keyCode == 40) {
+                if (playerY > 0 && playerY <600 && maze[(playerY/30)+1][playerX/30]) {
+                    playerY += speed; // Move down
+                    delay(200);
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //ignored
         }
     }
+    //playerX = constrain(playerX, 0, width - playerImg.width);
+    //playerY = constrain(playerY, 0, height - playerImg.height);
+
 
 
 
