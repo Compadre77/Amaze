@@ -84,7 +84,7 @@ public class Amaze extends PApplet {
 
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
-                if (!maze[i][j]) {
+                if (!maze[i][j]) { //ToDo: Anpassen wenn von Ture False weg
                     fill(0); // Draw boundaries in black
                 } else {
                     fill(255); // Draw open spaces in white
@@ -118,7 +118,7 @@ public class Amaze extends PApplet {
         playerY = constrain(playerY, 0, height - playerImg.height);
 
     }
-
+/*
     public void keyPressed() {
         if (keyCode == UP) {
             if (playerY > 0 && playerY < 600 && !maze[(playerY / 30) - 1][playerX / 30]) {
@@ -137,5 +137,5 @@ public class Amaze extends PApplet {
                 playerY++;
             }
         }
-    }
+    }*/
 }
