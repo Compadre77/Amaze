@@ -5,8 +5,6 @@ import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
-import java.util.Random;
-
 public class Amaze extends PApplet {
 
     public static void main(String[] args) {
@@ -19,6 +17,9 @@ public class Amaze extends PApplet {
     int playerX, playerY;
     int speed = 30;
     int playerSize = 30;
+    int gridSize = 600;
+
+    int[][] maze = {
     int flashLight = 3;
     int vision = 4;
     int key = 5;
@@ -89,7 +90,6 @@ public class Amaze extends PApplet {
     }
 
     public void draw() {
-
         background(255);
 
         for (int i = 0; i < maze.length; i++) {
@@ -103,13 +103,8 @@ public class Amaze extends PApplet {
                 rect(j * cellSize, i * cellSize, cellSize, cellSize);
             }
         }
-        //fill(0);
-        //rect(0, 0, width, height);
 
-        //fill(255);
-        //ellipse(playerX + playerImg.width / 2, playerY + playerImg.height/2, 100, 100);
-
-        fill(255);
+        fill(255, 240);
         rect(playerX+5,playerY+5,playerSize-15,playerSize-15);
         image(playerImg, playerX, playerY);
         if (start) {
@@ -148,8 +143,47 @@ public class Amaze extends PApplet {
         fill(0, 0, 0);
         text("Reset", 380, 725);
 
+        float rectX = playerX - gridSize, rectY = playerY - gridSize, rectWidth = 2*width, rectHeight = 2*height;
+        drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
+
         playerX = constrain(playerX, 0, width - playerImg.width);
         playerY = constrain(playerY, 0, height - playerImg.height);
+    }
+
+    void drawRadialGradient(float x, float y, float w, float h, int c) {
+        float centerX = x + w / 2.0f;
+        float centerY = y + h / 2.0f;
+        float maxDist = dist(centerX, centerY, x, y);
+
+        float transparentRadius = 0;
+        float gradientRadius = max(w, h) / 12.0f; // Set the gradient radius to one fifth of the maximum dimension of the rectangle
+
+        int numSegmentsX = 50; // Number of segments in the X direction
+        int numSegmentsY = 50; // Number of segments in the Y direction
+
+        float segmentWidth = w / numSegmentsX;
+        float segmentHeight = h / numSegmentsY;
+
+        for (int i = 0; i < numSegmentsX; i++) {
+            for (int j = 0; j < numSegmentsY; j++) {
+                float segmentX = x + i * segmentWidth;
+                float segmentY = y + j * segmentHeight;
+
+                float d = dist(centerX, centerY, segmentX + segmentWidth / 2, segmentY + segmentHeight / 2);
+                float t;
+                if (d < transparentRadius) {
+                    t = 0;
+                } else if (d < gradientRadius) {
+                    t = map(d, transparentRadius, gradientRadius, 0, 1);
+                } else {
+                    t = 1;
+                }
+                int currentColor = lerpColor(color(0, 0, 0, 0), c, t);
+                noStroke();
+                fill(currentColor);
+                rect(segmentX, segmentY, segmentWidth, segmentHeight);
+            }
+        }
     }
 
     public void keyPressed(){
