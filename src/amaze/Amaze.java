@@ -4,6 +4,8 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
+import java.util.Random;
+
 public class Amaze extends PApplet {
 
     public static void main(String[] args) {
@@ -14,8 +16,17 @@ public class Amaze extends PApplet {
     int playerX, playerY;
     int speed = 30;
     int playerSize = 30;
+    int flashLight = 3;
+    int vision = 4;
+    int key = 5;
+
+
+
+
     PGraphics spotlight;
-    /*int[][] maze = {
+
+
+    int[][] maze = new int[][] {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0},
             {1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1},
@@ -36,29 +47,6 @@ public class Amaze extends PApplet {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1},
             {1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-    };*/
-
-    boolean[][] maze = {
-            {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
-            {true, true, true, false, true, true, true, true, true, true, true, false, true, false, false, false, false, true, true, true},
-            {false, false, true, false, true, false, false, false, false, false, true, false, true, true, true, false, false, true, false, false},
-            {false, true, true, true, true, false, true, true, true, true, true, false, true, false, true, true, true, true, true, false},
-            {false, true, false, false, false, false, false, true, false, false, true, false, true, true, true, false, true, false, false, false},
-            {false, true, true, true, true, true, false, true, false, false, true, false, false, false, true, false, false, false, false, false},
-            {false, true, false, false, false, true, false, true, false, false, true, false, true, true, true, false, true, true, true, false},
-            {false, true, true, false, true, true, false, true, false, false, true, false, false, false, true, false, false, false, true, false},
-            {false, false, false, false, true, false, false, true, true, true, true, false, true, true, true, true, true, false, true, false},
-            {false, true, true, true, true, true, false, false, false, false, true, false, true, false, false, false, true, false, true, false},
-            {false, false, false, false, false, true, false, false, true, false, true, false, true, true, true, false, true, false, true, false},
-            {false, true, true, true, false, true, true, true, true, false, true, false, true, false, false, false, true, false, true, false},
-            {false, true, false, false, false, true, false, false, false, false, true, true, true, true, true, false, true, false, true, false},
-            {false, true, true, true, true, true, true, true, true, false, true, false, false, false, true, false, true, false, true, false},
-            {false, true, false, false, false, false, false, false, false, false, true, false, true, false, true, true, true, false, true, false},
-            {false, true, false, true, true, true, true, true, true, false, true, false, true, false, true, false, true, false, true, false},
-            {false, true, false, false, false, false, false, false, true, false, true, false, true, true, true, false, true, false, true, false},
-            {false, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, true, false, true, false},
-            {false, false, false, false, false, true, false, false, false, false, false, true, true, true, true, true, true, true, true, false},
-            {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}
     };
 
     int cellSize = 30;
@@ -74,14 +62,30 @@ public class Amaze extends PApplet {
         playerY = 30;
 
         spotlight = createGraphics(width, height);
+
+        extracted();
+        System.out.println(maze[0][0]);
+    }
+
+    private void extracted() {
+        int positionA = 0;
+        int positionB = 0;
+        for (int x = 2; x < 5; x++) {
+            while (maze[positionA][positionB]!=0){
+                positionA=(int)random(0,20);
+                positionB=(int)random(0,20);
+            }
+            maze[positionA][positionB]=x;
+        }
     }
 
     public void draw() {
+
         background(255);
 
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
-                if (!maze[i][j]) {
+                if (maze[i][j]==1) {
                     fill(0); // Draw boundaries in black
                 } else {
                     fill(255); // Draw open spaces in white
@@ -105,24 +109,25 @@ public class Amaze extends PApplet {
     }
 
     public void keyPressed(){
+
         try {
-            if (keyCode == 37) {
-                if (playerX > 0 && playerX <600 && maze[playerY/30][(playerX/30)-1]) {
+            if (keyCode == 37) {   //left
+                if (playerX > 0 && playerX <600 && maze[playerY/30][(playerX/30)-1]!=1) {
                     playerX -= speed; // Move left
                     delay(200);
                 }
-            } else if (keyCode == 39) {
-                if (playerX > 0 && playerX <600 && maze[playerY/30][(playerX/30)+1]) {
+            } else if (keyCode == 39) {  //right
+                if (playerX > 0 && playerX <600 && maze[playerY/30][(playerX/30)+1]!=1) {
                     playerX += speed; // Move right
                     delay(200);
                 }
-            } else if (keyCode == 38) {
-                if (playerY > 0 && playerY <600 && maze[(playerY/30)-1][playerX/30]) {
+            } else if (keyCode == 38) {   //up
+                if (maze[(playerY/30)-1][playerX/30] != 1) {
                     playerY -= speed; // Move up
                     delay(200);
                 }
-            } else if (keyCode == 40) {
-                if (playerY > 0 && playerY <600 && maze[(playerY/30)+1][playerX/30]) {
+            } else if (keyCode == 40) {  //down
+                if (maze[(playerY/30)+1][playerX/30] != 1) {
                     playerY += speed; // Move down
                     delay(200);
                 }
@@ -131,6 +136,4 @@ public class Amaze extends PApplet {
             //ignored
         }
     }
-    //playerX = constrain(playerX, 0, width - playerImg.width);
-    //playerY = constrain(playerY, 0, height - playerImg.height);
 }
