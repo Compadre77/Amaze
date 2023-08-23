@@ -19,7 +19,6 @@ public class Amaze extends PApplet {
     int playerSize = 30;
     int gridSize = 600;
 
-    int[][] maze = {
     int flashLight = 3;
     int vision = 4;
     int key = 5;
@@ -61,7 +60,7 @@ public class Amaze extends PApplet {
     int cellSize = 30;
 
     public void settings() {
-        size(gridSize, gridSize);
+        size(gridSize, gridSize+200);
     }
 
     public void setup() {
@@ -143,7 +142,7 @@ public class Amaze extends PApplet {
         fill(0, 0, 0);
         text("Reset", 380, 725);
 
-        float rectX = playerX - gridSize, rectY = playerY - gridSize, rectWidth = 2*width, rectHeight = 2*height;
+        float rectX = playerX - gridSize, rectY = playerY - gridSize-200, rectWidth = 2*width, rectHeight = 2*height;
         drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
 
         playerX = constrain(playerX, 0, width - playerImg.width);
