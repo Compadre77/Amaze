@@ -115,6 +115,13 @@ public class Amaze extends PApplet {
     }
 
     private void extracted() {
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (maze[i][j]==2||maze[i][j]==3||maze[i][j]==4){
+                    maze[i][j]=0;
+                }
+            }
+        }
         int positionA = 0;
         int positionB = 0;
         for (int x = 2; x < 5; x++) {
