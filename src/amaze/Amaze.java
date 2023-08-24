@@ -113,11 +113,11 @@ public class Amaze extends PApplet {
                 } else if (maze[i][j] == 4) {
                     fill(255);
                     keyX = (j * 30) + 1;
-                    keyY = i * 30;
+                    keyY = i * 30; //Get the key coordinates
                 } else if (maze[i][j]==6) {
                     fill(255);
                     exitX=(j*30)+1;
-                    exitY=i*30;
+                    exitY=i*30; //Get the end coordinates
                 } else {
                     fill(255); // Draw open spaces in white
                 }
