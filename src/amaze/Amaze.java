@@ -143,8 +143,6 @@ public class Amaze extends PApplet {
 
         if (!revealMaze) {
             drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
-        } else {
-            drawRadialGradient(rectX, rectY, rectWidth * 4, rectHeight * 4, color(0, 0, 0));
         }
 
 
@@ -216,7 +214,12 @@ public class Amaze extends PApplet {
             restart = true;
             textFont(winMessage);
             textAlign(CENTER, CENTER);
+            rectMode(CENTER);
+            fill(5,100);
+            rect(width/2,height/3,width,80);
+            rectMode(CORNER);
             fill(255, 215, 0);
+            stroke(0);
             text("You have found the exit!\nCongratulations!", width / 2, height / 3);
 
             textFont(f);
