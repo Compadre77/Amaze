@@ -37,8 +37,6 @@ public class Amaze extends PApplet {
     int keyY = 0;
     boolean revealMaze = false;
     boolean restart = false;
-    int keyX=0;
-    int keyY=0;
 
     int[][] maze = new int[][]{
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -114,10 +112,10 @@ public class Amaze extends PApplet {
                     fill(255);
                     keyX = (j * 30) + 1;
                     keyY = i * 30; //Get the key coordinates
-                } else if (maze[i][j]==6) {
+                } else if (maze[i][j] == 6) {
                     fill(255);
-                    exitX=(j*30)+1;
-                    exitY=i*30; //Get the end coordinates
+                    exitX = (j * 30) + 1;
+                    exitY = i * 30; //Get the end coordinates
                 } else {
                     fill(255); // Draw open spaces in white
                 }
@@ -141,9 +139,6 @@ public class Amaze extends PApplet {
             inventarKey = true;
         }
 
-
-            float rectX = playerX - gridSize, rectY = playerY - gridSize-200, rectWidth = 2*width, rectHeight = 2*height;
-            drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
         float rectX = playerX - gridSize, rectY = playerY - gridSize - 200, rectWidth = 2 * width, rectHeight = 2 * height;
 
         if (!revealMaze) {
@@ -202,10 +197,10 @@ public class Amaze extends PApplet {
         fill(0, 0, 0);
         text("Reset", 380, 725);
 
-        if (playerX == exitX && playerY == exitY&& inventarKey) {
+        if (playerX == exitX && playerY == exitY && inventarKey) {
             gameCompleted = true;
             revealMaze = true;
-        }else if (playerX == exitX && playerY == exitY && !inventarKey) {
+        } else if (playerX == exitX && playerY == exitY && !inventarKey) {
             textFont(winMessage);
             textAlign(CENTER, CENTER);
             fill(255, 215, 0);
@@ -256,9 +251,8 @@ public class Amaze extends PApplet {
                 resetButtonPressed = false;
             }
 
-            if (playerX == exitX && playerY == exitY &&inventarKey) {
+            if (playerX == exitX && playerY == exitY && inventarKey) {
                 gameCompleted = true;
-                System.out.println(revealMaze);
             }
         }
     }
