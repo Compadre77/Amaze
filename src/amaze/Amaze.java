@@ -86,30 +86,51 @@ public class Amaze extends PApplet {
     }
 
     public void draw() {
+
+//        if(mousePressed && mouseX > 150 && mouseX < 250 && mouseY > 700 && mouseY < 740) {
+//            startButtonPressed = true;
+//            if(gameCompleted) {
+//                reset = true;
+//                playerX = 1;
+//                playerY = 30;
+//                gameCompleted = false;
+//            }
+//            start = true;
+//        } else {
+//            startButtonPressed = false;
+//        }
+//
+//        if (mousePressed && mouseX > 350 && mouseX < 450 && mouseY > 700 && mouseY < 740) {
+//            resetButtonPressed = true;
+//            if(gameCompleted) {
+//                reset = true;
+//                playerX = 1;
+//                playerY = 30;
+//                gameCompleted = false;
+//                start = false;
+//            }
+//        } else {
+//            resetButtonPressed = false;
+//        }
+//
+//        if (playerX == exitX && playerY == exitY) {
+//            gameCompleted = true;
+//            start = false;
+//        }
+
         if (gameCompleted) {
-            background(0);
             textFont(winMessage);
             textAlign(CENTER, CENTER);
             fill(255, 215, 0);
-            text("You have found the exit!\nCongratulations!", width / 2, height / 2);
+            text("You have found the exit!\nCongratulations!", width / 2, height / 3);
 
             textFont(f);
             textAlign(LEFT, BASELINE);
             fill(0);
+            return;
 
-            // Start Button
-            fill(34, 139, 34);
-            rect(150, 700, 100, 40, 10, 10, 10, 10);
-            fill(0, 0, 0);
-            text("Start", 180, 725);
-
-            // Reset Button
-            fill(178, 34, 34);
-            rect(350, 700, 100, 40, 10, 10, 10, 10);
-            fill(0, 0, 0);
-            text("Reset", 380, 725);
-
-        } else {
+        }
+        //else {
             background(255);
 
             for (int i = 0; i < maze.length; i++) {
@@ -175,24 +196,12 @@ public class Amaze extends PApplet {
             }
 
 
-
-
-
-
-
             playerX = constrain(playerX, 0, width - playerImg.width);
             playerY = constrain(playerY, 0, height - playerImg.height);
-
-
-            //fill(0);
-            //rect(0, 0, width, height);
-            //fill(255);
-            //textSize(32);
-            //text("You have found the exit!\nCongratulations!", width / 2 -200, height / 2);
         }
 
 
-    }
+   // }
 
     void drawRadialGradient(float x, float y, float w, float h, int c) {
         float centerX = x + w / 2.0f;
@@ -231,7 +240,7 @@ public class Amaze extends PApplet {
     }
 
     public void keyPressed(){
-        if (!start) {
+        if (!start || gameCompleted) {
             return;
         }
 
