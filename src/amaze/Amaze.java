@@ -31,8 +31,8 @@ public class Amaze extends PApplet {
 
     boolean gameCompleted = false;
     boolean inventarKey = false;
-    int exitX = (19 * 30)+1;
-    int exitY = 1 * 30;
+    int exitX = 0;
+    int exitY = 0;
     int keyX = 0;
     int keyY = 0;
     boolean revealMaze = false;
@@ -114,6 +114,10 @@ public class Amaze extends PApplet {
                     fill(255);
                     keyX = (j * 30) + 1;
                     keyY = i * 30;
+                } else if (maze[i][j]==6) {
+                    fill(255);
+                    exitX=(j*30)+1;
+                    exitY=i*30;
                 } else {
                     fill(255); // Draw open spaces in white
                 }
