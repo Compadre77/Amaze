@@ -10,8 +10,7 @@ public class Amaze extends PApplet {
         PApplet.main(new String[]{Amaze.class.getName()});
     }
 
-    PImage playerImgRight;
-    PImage playerImgLeft;
+    PImage playerImg;
     PImage keyImg;
     PImage doorClosedImg;
     PImage doorOpenImg;
@@ -38,8 +37,6 @@ public class Amaze extends PApplet {
     int keyY = 0;
     boolean revealMaze = false;
     boolean restart = false;
-
-    boolean direction = true;
 
     int[][] maze = new int[][]{
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -76,15 +73,13 @@ public class Amaze extends PApplet {
     }
 
     public void setup() {
-        playerImgRight = loadImage("ressources/knight_right.png");
-        playerImgLeft = loadImage("ressources/knight_left.png");
+        playerImg = loadImage("./ressources/knight.png");
         keyImg = loadImage("./ressources/key.png");
         doorClosedImg = loadImage("./ressources/doorClosed.jpg");
         doorOpenImg = loadImage("./ressources/doorOpen.jpg");
         f = createFont("Arial", 16, true);
         winMessage = createFont("./ressources/Gameplay.ttf", 28);
-        playerImgRight.resize(playerSize, 0);
-        playerImgLeft.resize(playerSize, 0);
+        playerImg.resize(playerSize, 0);
         keyImg.resize(playerSize, 0);
         doorClosedImg.resize(doorSize, 0);
         doorOpenImg.resize(doorSizeOpen, 0);
@@ -128,8 +123,8 @@ public class Amaze extends PApplet {
                 rect(j * cellSize, i * cellSize, cellSize, cellSize);
             }
         }
+        image(playerImg, playerX, playerY);
 
-        
         if (!inventarKey) {
             image(keyImg, keyX, keyY);
         }
@@ -319,12 +314,10 @@ public class Amaze extends PApplet {
             if (keyCode == 37) {   //left
                 if (playerX > 0 && playerX < 600 && maze[playerY / 30][(playerX / 30) - 1] != 1) {
                     playerX -= speed; // Move left
-                    direction = false;
                 }
             } else if (keyCode == 39) {  //right
                 if (playerX > 0 && playerX < 600 && maze[playerY / 30][(playerX / 30) + 1] != 1) {
                     playerX += speed; // Move right
-                    direction = true;
                 }
             } else if (keyCode == 38) {   //up
                 if (maze[(playerY / 30) - 1][playerX / 30] != 1) {
