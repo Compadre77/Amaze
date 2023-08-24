@@ -32,6 +32,7 @@ public class Amaze extends PApplet {
     int exitX = 19 * 30;
     int exitY = 1 * 30;
     boolean revealMaze = false;
+    boolean restart = false;
 
     int[][] maze = new int[][]{
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -69,7 +70,6 @@ public class Amaze extends PApplet {
         playerImg.resize(playerSize, 0);
         playerX = 1;
         playerY = 30;
-        revealMaze = false;
 
         extracted();
         System.out.println(maze[0][0]);
@@ -88,53 +88,6 @@ public class Amaze extends PApplet {
     }
 
     public void draw() {
-        if (gameCompleted) {
-            revealMaze = true;
-            start = false;
-            textFont(winMessage);
-            textAlign(CENTER, CENTER);
-            fill(255, 215, 0);
-            text("You have found the exit!\nCongratulations!", width / 2, height / 3);
-
-            textFont(f);
-            textAlign(LEFT, BASELINE);
-            fill(0);
-
-            if (mousePressed && mouseX > 150 && mouseX < 250 && mouseY > 700 && mouseY < 740) {
-                startButtonPressed = true;
-                if (gameCompleted) {
-                    reset = true;
-                    playerX = 1;
-                    playerY = 30;
-                    gameCompleted = false;
-                    revealMaze = false;
-                }
-                start = true;
-            } else {
-                startButtonPressed = false;
-            }
-
-            if (mousePressed && mouseX > 350 && mouseX < 450 && mouseY > 700 && mouseY < 740) {
-                resetButtonPressed = true;
-                if (gameCompleted) {
-                    reset = true;
-                    playerX = 1;
-                    playerY = 30;
-                    gameCompleted = false;
-                    revealMaze = false;
-                    start = false;
-                }
-            } else {
-                resetButtonPressed = false;
-            }
-
-            if (playerX == exitX && playerY == exitY) {
-                gameCompleted = true;
-                start = false;
-            }
-            return;
-
-        }
         background(255);
 
         for (int i = 0; i < maze.length; i++) {
@@ -153,11 +106,13 @@ public class Amaze extends PApplet {
         rect(playerX + 5, playerY + 5, playerSize - 15, playerSize - 15);
         image(playerImg, playerX, playerY);
 
+        float rectX = playerX - gridSize, rectY = playerY - gridSize - 200, rectWidth = 2 * width, rectHeight = 2 * height;
 
-//        if(!revealMaze) {
-//            float rectX = playerX - gridSize, rectY = playerY - gridSize - 200, rectWidth = 2 * width, rectHeight = 2 * height;
-//            drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
-//        }
+        if (!revealMaze) {
+            drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
+        } else {
+            drawRadialGradient(rectX, rectY, rectWidth * 4, rectHeight * 4, color(0, 0, 0));
+        }
 
 
         if (start) {
@@ -168,6 +123,17 @@ public class Amaze extends PApplet {
             textFont(f, 16);
             fill(255);
             text("Um zu spielen, klicke auf \"Start\"", 190, 650);
+        }
+
+        //Restart Game After Completion
+        if (restart) {
+            textFont(f, 16);
+            fill(0);
+            text("Um zu spielen, klicke auf \"Start\"", 190, 650);
+        } else {
+            textFont(f, 16);
+            fill(255);
+            text("", 190, 650);
         }
 
         if (reset) {
@@ -203,12 +169,54 @@ public class Amaze extends PApplet {
             revealMaze = true;
         }
 
-
-        System.out.println("Player:"+playerX+" "+playerY);
-        System.out.println("Exit:"+exitX+" "+exitY);
-
         playerX = constrain(playerX, 0, width - playerImg.width);
         playerY = constrain(playerY, 0, height - playerImg.height);
+
+        if (gameCompleted) {
+            revealMaze = true;
+            restart = true;
+            textFont(winMessage);
+            textAlign(CENTER, CENTER);
+            fill(255, 215, 0);
+            text("You have found the exit!\nCongratulations!", width / 2, height / 3);
+
+            textFont(f);
+            textAlign(LEFT, BASELINE);
+            fill(0);
+
+            if (mousePressed && mouseX > 150 && mouseX < 250 && mouseY > 700 && mouseY < 740) {
+                startButtonPressed = true;
+                if (gameCompleted) {
+                    reset = true;
+                    playerX = 1;
+                    playerY = 30;
+                    gameCompleted = false;
+                    revealMaze = false;
+                }
+                restart = false;
+            } else {
+                startButtonPressed = false;
+            }
+
+            if (mousePressed && mouseX > 350 && mouseX < 450 && mouseY > 700 && mouseY < 740) {
+                resetButtonPressed = true;
+                if (gameCompleted) {
+                    reset = true;
+                    playerX = 1;
+                    playerY = 30;
+                    gameCompleted = false;
+                    revealMaze = false;
+                    restart = false;
+                }
+            } else {
+                resetButtonPressed = false;
+            }
+
+            if (playerX == exitX && playerY == exitY) {
+                gameCompleted = true;
+                System.out.println(revealMaze);
+            }
+        }
     }
 
     void drawRadialGradient(float x, float y, float w, float h, int c) {
