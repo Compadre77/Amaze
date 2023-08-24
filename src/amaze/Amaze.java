@@ -313,22 +313,18 @@ public class Amaze extends PApplet {
             if (keyCode == 37) {   //left
                 if (playerX > 0 && playerX < 600 && maze[playerY / 30][(playerX / 30) - 1] != 1) {
                     playerX -= speed; // Move left
-                    delay(200);
                 }
             } else if (keyCode == 39) {  //right
                 if (playerX > 0 && playerX < 600 && maze[playerY / 30][(playerX / 30) + 1] != 1) {
                     playerX += speed; // Move right
-                    delay(200);
                 }
             } else if (keyCode == 38) {   //up
                 if (maze[(playerY / 30) - 1][playerX / 30] != 1) {
                     playerY -= speed; // Move up
-                    delay(200);
                 }
             } else if (keyCode == 40) {  //down
                 if (maze[(playerY / 30) + 1][playerX / 30] != 1) {
                     playerY += speed; // Move down
-                    delay(200);
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
