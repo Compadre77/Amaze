@@ -4,6 +4,10 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class Amaze extends PApplet {
 
     public static void main(String[] args) {
@@ -15,11 +19,13 @@ public class Amaze extends PApplet {
     PImage keyImg;
     PImage doorClosedImg;
     PImage doorOpenImg;
+    PImage visionImg;
     PImage flashlightImg;
-    PFont f;
+    PFont text;
     PFont winMessage;
 
     int playerX, playerY;
+    int visionX, visionY;
     int speed = 30;
     int playerSize = 30;
     int doorSize = 22;
@@ -32,6 +38,8 @@ public class Amaze extends PApplet {
     boolean reset = false;
     boolean startButtonPressed = false;
     boolean resetButtonPressed = false;
+    boolean visionActivate = false;
+    boolean scheduled = false;
 
     boolean gameCompleted = false;
     boolean inventarKey = false;
@@ -45,6 +53,9 @@ public class Amaze extends PApplet {
     int flashlightY = 0;
     boolean revealMaze = false;
     boolean restart = false;
+
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
 
     int[][] maze = new int[][]{
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -87,7 +98,7 @@ public class Amaze extends PApplet {
         flashlightImg = loadImage("./ressources/Flashlight.png");
         doorClosedImg = loadImage("./ressources/doorClosed.jpg");
         doorOpenImg = loadImage("./ressources/doorOpen.jpg");
-        f = createFont("Arial", 16, true);
+        text = createFont("Arial", 16, true);
         winMessage = createFont("./ressources/Gameplay.ttf", 28);
         playerImgRight.resize(playerSize, 0);
         playerImgLeft.resize(playerSize, 0);
@@ -95,6 +106,8 @@ public class Amaze extends PApplet {
         doorClosedImg.resize(doorSize, 0);
         doorOpenImg.resize(doorSizeOpen, 0);
         flashlightImg.resize(flashlightSize, 0);
+        visionImg = loadImage("./ressources/vision.png");
+        visionImg.resize(playerSize, 20);
         playerX = 1;
         playerY = 30;
 
@@ -124,6 +137,10 @@ public class Amaze extends PApplet {
                     fill(255);
                     flashlightX = (j * 30) + 1;
                     flashlightY = i * 30; //Get the key coordinates
+                } else if (maze[i][j] == 3) {
+                    fill(255);
+                    visionX = (j * cellSize) + 1;
+                    visionY = i * cellSize;
                 } else if (maze[i][j] == 4) {
                     fill(255);
                     keyX = (j * 30) + 1;
@@ -140,20 +157,20 @@ public class Amaze extends PApplet {
             }
         }
 
-        if(isRight) {
+        if (isRight) {
             image(playerImgRight, playerX, playerY);
         } else {
             image(playerImgLeft, playerX, playerY);
         }
 
         if (!inventarKey) {
-            fill(255,153,255);
-            rect(keyX,keyY,cellSize,cellSize);
+            fill(255, 153, 255);
+            rect(keyX, keyY, cellSize, cellSize);
             image(keyImg, keyX, keyY);
-            tint(255,128);
+            tint(255, 128);
             image(keyImg, 30, 7);
-            tint(255,255);
-        }else {
+            tint(255, 255);
+        } else {
             image(keyImg, 30, 7);
         }
 
@@ -167,45 +184,50 @@ public class Amaze extends PApplet {
             inventarKey = true;
         }
 
-        if(!flashlight){
-            fill(255,153,255);
-            rect(flashlightX,flashlightY,cellSize,cellSize);
+        if (!flashlight) {
+            fill(255, 153, 255);
+            rect(flashlightX, flashlightY, cellSize, cellSize);
             image(flashlightImg, flashlightX, flashlightY);
-            tint(255,128);
+            tint(255, 128);
             image(flashlightImg, 0, 0);
-            tint(255,255);
+            tint(255, 255);
         } else {
             image(flashlightImg, 1, 0);
         }
 
-        if(playerX == flashlightX && playerY == flashlightY){
+        if (playerX == flashlightX && playerY == flashlightY) {
             flashlight = true;
+        }
+
+        if (!visionActivate) {
+            fill(255, 153, 255);
+            rect(visionX, visionY, cellSize, cellSize);
+            image(visionImg, visionX, visionY);
         }
 
         float rectX = playerX - gridSize, rectY = playerY - gridSize - 200, rectWidth = 2 * width, rectHeight = 2 * height;
 
         if (!revealMaze) {
-            //drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
+            drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
         }
 
-
         if (start) {
-            textFont(f, 16);
+            textFont(text, 16);
             fill(0);
             text("", 190, 650);
         } else {
-            textFont(f, 16);
+            textFont(text, 16);
             fill(255);
-            text("Um zu spielen, klicke auf \"Start\"", 190, 650);
+            text("To play press \"Start\"", 220, 650);
         }
 
         //Restart Game After Completion
         if (restart) {
-            textFont(f, 16);
+            textFont(text, 16);
             fill(0);
-            text("Um zu spielen, klicke auf \"Start\"", 190, 650);
+            text("To play press \"Start\"", 220, 650);
         } else {
-            textFont(f, 16);
+            textFont(text, 16);
             fill(255);
             text("", 190, 650);
         }
@@ -247,7 +269,7 @@ public class Amaze extends PApplet {
             fill(255, 215, 0);
             text("Find the Key first!", width / 2, height / 3);
 
-            textFont(f);
+            textFont(text);
             textAlign(LEFT, BASELINE);
             fill(0);
         }
@@ -258,14 +280,14 @@ public class Amaze extends PApplet {
             textFont(winMessage);
             textAlign(CENTER, CENTER);
             rectMode(CENTER);
-            fill(5,100);
-            rect(width/2,height/3,width,80);
+            fill(5, 100);
+            rect(width / 2, height / 3, width, 80);
             rectMode(CORNER);
             fill(255, 215, 0);
             stroke(0);
             text("You have found the exit!\nCongratulations!", width / 2, height / 3);
 
-            textFont(f);
+            textFont(text);
             textAlign(LEFT, BASELINE);
             fill(0);
 
@@ -277,8 +299,9 @@ public class Amaze extends PApplet {
                     playerY = 30;
                     gameCompleted = false;
                     revealMaze = false;
-                    inventarKey=false;
-                    flashlight=false;
+                    inventarKey = false;
+                    flashlight = false;
+                    visionActivate = false;
                     extracted();
                 }
                 restart = false;
@@ -295,8 +318,9 @@ public class Amaze extends PApplet {
                     gameCompleted = false;
                     revealMaze = false;
                     restart = false;
-                    inventarKey=false;
-                    flashlight=false;
+                    inventarKey = false;
+                    flashlight = false;
+                    visionActivate = false;
                     extracted();
                 }
             } else {
@@ -327,10 +351,24 @@ public class Amaze extends PApplet {
             float segmentWidth = w / numSegmentsX;
             float segmentHeight = h / numSegmentsY;
 
-            if (flashlight){
-                gradientRadius  = max(w, h) / 8.0f;
+            if (playerX == visionX && playerY == visionY) {
+                revealMaze = true;
+                maze[visionY / 30][(visionX - 1) / 30] = 0;
+                visionX = 0;
+                visionY = 0;
+                if (!scheduled) {
+                    scheduled = true;
+                    executorService.schedule(() -> {
+                        revealMaze = false;
+                        scheduled = false;
+                    }, 2, TimeUnit.SECONDS);
+                }
+            }
+
+            if (flashlight) {
+                gradientRadius = max(w, h) / 8.0f;
             } else {
-                gradientRadius  = max(w, h) / 12.0f;
+                gradientRadius = max(w, h) / 12.0f;
 
             }
 
