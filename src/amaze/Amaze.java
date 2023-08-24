@@ -14,6 +14,7 @@ public class Amaze extends PApplet {
     PImage keyImg;
     PImage doorClosedImg;
     PImage doorOpenImg;
+    PImage flashlightImg;
     PFont f;
     PFont winMessage;
 
@@ -22,6 +23,7 @@ public class Amaze extends PApplet {
     int playerSize = 30;
     int doorSize = 22;
     int doorSizeOpen = 19;
+    int flashlightSize = 30;
     int gridSize = 600;
 
     boolean start = false;
@@ -31,10 +33,14 @@ public class Amaze extends PApplet {
 
     boolean gameCompleted = false;
     boolean inventarKey = false;
+    boolean flashlight = false;
+
     int exitX = 0;
     int exitY = 0;
     int keyX = 0;
     int keyY = 0;
+    int flashlightX = 0;
+    int flashlightY = 0;
     boolean revealMaze = false;
     boolean restart = false;
 
@@ -75,6 +81,7 @@ public class Amaze extends PApplet {
     public void setup() {
         playerImg = loadImage("./ressources/knight.png");
         keyImg = loadImage("./ressources/key.png");
+        flashlightImg = loadImage("./ressources/Flashlight.png");
         doorClosedImg = loadImage("./ressources/doorClosed.jpg");
         doorOpenImg = loadImage("./ressources/doorOpen.jpg");
         f = createFont("Arial", 16, true);
@@ -83,6 +90,7 @@ public class Amaze extends PApplet {
         keyImg.resize(playerSize, 0);
         doorClosedImg.resize(doorSize, 0);
         doorOpenImg.resize(doorSizeOpen, 0);
+        flashlightImg.resize(flashlightSize, 0);
         playerX = 1;
         playerY = 30;
 
@@ -108,6 +116,10 @@ public class Amaze extends PApplet {
             for (int j = 0; j < maze[i].length; j++) {
                 if (maze[i][j] == 1) {
                     fill(0); // Draw boundaries in black
+                } else if (maze[i][j] == 2) {
+                    fill(255);
+                    flashlightX = (j * 30) + 1;
+                    flashlightY = i * 30; //Get the key coordinates
                 } else if (maze[i][j] == 4) {
                     fill(255);
                     keyX = (j * 30) + 1;
@@ -137,6 +149,14 @@ public class Amaze extends PApplet {
 
         if (playerX == keyX && playerY == keyY) {
             inventarKey = true;
+        }
+
+        if(!flashlight){
+            image(flashlightImg, flashlightX, flashlightY);
+        }
+
+        if(playerX == flashlightX && playerY == flashlightY){
+            flashlight = true;
         }
 
         float rectX = playerX - gridSize, rectY = playerY - gridSize - 200, rectWidth = 2 * width, rectHeight = 2 * height;
@@ -270,13 +290,20 @@ public class Amaze extends PApplet {
             float maxDist = dist(centerX, centerY, x, y);
 
             float transparentRadius = 0;
-            float gradientRadius = max(w, h) / 12.0f; // Set the gradient radius to one fifth of the maximum dimension of the rectangle
+            float gradientRadius; // Set the gradient radius to one fifth of the maximum dimension of the rectangle
 
             int numSegmentsX = 50; // Number of segments in the X direction
             int numSegmentsY = 50; // Number of segments in the Y direction
 
             float segmentWidth = w / numSegmentsX;
             float segmentHeight = h / numSegmentsY;
+
+            if (flashlight){
+                gradientRadius  = max(w, h) / 8.0f;
+            } else {
+                gradientRadius  = max(w, h) / 12.0f;
+
+            }
 
             for (int i = 0; i < numSegmentsX; i++) {
                 for (int j = 0; j < numSegmentsY; j++) {
