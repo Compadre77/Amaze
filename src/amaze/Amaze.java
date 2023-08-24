@@ -87,37 +87,6 @@ public class Amaze extends PApplet {
 
     public void draw() {
 
-//        if(mousePressed && mouseX > 150 && mouseX < 250 && mouseY > 700 && mouseY < 740) {
-//            startButtonPressed = true;
-//            if(gameCompleted) {
-//                reset = true;
-//                playerX = 1;
-//                playerY = 30;
-//                gameCompleted = false;
-//            }
-//            start = true;
-//        } else {
-//            startButtonPressed = false;
-//        }
-//
-//        if (mousePressed && mouseX > 350 && mouseX < 450 && mouseY > 700 && mouseY < 740) {
-//            resetButtonPressed = true;
-//            if(gameCompleted) {
-//                reset = true;
-//                playerX = 1;
-//                playerY = 30;
-//                gameCompleted = false;
-//                start = false;
-//            }
-//        } else {
-//            resetButtonPressed = false;
-//        }
-//
-//        if (playerX == exitX && playerY == exitY) {
-//            gameCompleted = true;
-//            start = false;
-//        }
-
         if (gameCompleted) {
             textFont(winMessage);
             textAlign(CENTER, CENTER);
@@ -130,7 +99,6 @@ public class Amaze extends PApplet {
             return;
 
         }
-        //else {
             background(255);
 
             for (int i = 0; i < maze.length; i++) {
@@ -199,9 +167,6 @@ public class Amaze extends PApplet {
             playerX = constrain(playerX, 0, width - playerImg.width);
             playerY = constrain(playerY, 0, height - playerImg.height);
         }
-
-
-   // }
 
     void drawRadialGradient(float x, float y, float w, float h, int c) {
         float centerX = x + w / 2.0f;
