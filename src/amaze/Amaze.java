@@ -10,7 +10,8 @@ public class Amaze extends PApplet {
         PApplet.main(new String[]{Amaze.class.getName()});
     }
 
-    PImage playerImg;
+    PImage playerImgRight;
+    PImage playerImgLeft;
     PImage keyImg;
     PImage doorClosedImg;
     PImage doorOpenImg;
@@ -25,6 +26,7 @@ public class Amaze extends PApplet {
     int doorSizeOpen = 19;
     int flashlightSize = 30;
     int gridSize = 600;
+    boolean isRight = true;
 
     boolean start = false;
     boolean reset = false;
@@ -79,14 +81,16 @@ public class Amaze extends PApplet {
     }
 
     public void setup() {
-        playerImg = loadImage("./ressources/knight.png");
+        playerImgRight = loadImage("./ressources/knight_right.png");
+        playerImgLeft = loadImage("./ressources/knight_left.png");
         keyImg = loadImage("./ressources/key.png");
         flashlightImg = loadImage("./ressources/Flashlight.png");
         doorClosedImg = loadImage("./ressources/doorClosed.jpg");
         doorOpenImg = loadImage("./ressources/doorOpen.jpg");
         f = createFont("Arial", 16, true);
         winMessage = createFont("./ressources/Gameplay.ttf", 28);
-        playerImg.resize(playerSize, 0);
+        playerImgRight.resize(playerSize, 0);
+        playerImgLeft.resize(playerSize, 0);
         keyImg.resize(playerSize, 0);
         doorClosedImg.resize(doorSize, 0);
         doorOpenImg.resize(doorSizeOpen, 0);
@@ -135,10 +139,22 @@ public class Amaze extends PApplet {
                 rect(j * cellSize, i * cellSize, cellSize, cellSize);
             }
         }
-        image(playerImg, playerX, playerY);
+
+        if(isRight) {
+            image(playerImgRight, playerX, playerY);
+        } else {
+            image(playerImgLeft, playerX, playerY);
+        }
 
         if (!inventarKey) {
+            fill(255,153,255);
+            rect(keyX,keyY,cellSize,cellSize);
             image(keyImg, keyX, keyY);
+            tint(255,128);
+            image(keyImg, 30, 7);
+            tint(255,255);
+        }else {
+            image(keyImg, 30, 7);
         }
 
         if (inventarKey) {
@@ -152,7 +168,14 @@ public class Amaze extends PApplet {
         }
 
         if(!flashlight){
+            fill(255,153,255);
+            rect(flashlightX,flashlightY,cellSize,cellSize);
             image(flashlightImg, flashlightX, flashlightY);
+            tint(255,128);
+            image(flashlightImg, 0, 0);
+            tint(255,255);
+        } else {
+            image(flashlightImg, 1, 0);
         }
 
         if(playerX == flashlightX && playerY == flashlightY){
@@ -162,7 +185,7 @@ public class Amaze extends PApplet {
         float rectX = playerX - gridSize, rectY = playerY - gridSize - 200, rectWidth = 2 * width, rectHeight = 2 * height;
 
         if (!revealMaze) {
-            drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
+            //drawRadialGradient(rectX, rectY, rectWidth, rectHeight, color(0, 0, 0));
         }
 
 
@@ -254,6 +277,9 @@ public class Amaze extends PApplet {
                     playerY = 30;
                     gameCompleted = false;
                     revealMaze = false;
+                    inventarKey=false;
+                    flashlight=false;
+                    extracted();
                 }
                 restart = false;
             } else {
@@ -269,6 +295,9 @@ public class Amaze extends PApplet {
                     gameCompleted = false;
                     revealMaze = false;
                     restart = false;
+                    inventarKey=false;
+                    flashlight=false;
+                    extracted();
                 }
             } else {
                 resetButtonPressed = false;
@@ -341,10 +370,12 @@ public class Amaze extends PApplet {
             if (keyCode == 37) {   //left
                 if (playerX > 0 && playerX < 600 && maze[playerY / 30][(playerX / 30) - 1] != 1) {
                     playerX -= speed; // Move left
+                    isRight = false;
                 }
             } else if (keyCode == 39) {  //right
                 if (playerX > 0 && playerX < 600 && maze[playerY / 30][(playerX / 30) + 1] != 1) {
                     playerX += speed; // Move right
+                    isRight = true;
                 }
             } else if (keyCode == 38) {   //up
                 if (maze[(playerY / 30) - 1][playerX / 30] != 1) {
