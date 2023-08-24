@@ -20,8 +20,8 @@ public class Amaze extends PApplet {
     int playerX, playerY;
     int speed = 30;
     int playerSize = 30;
-    int doorSize=22;
-    int doorSizeOpen=19;
+    int doorSize = 22;
+    int doorSizeOpen = 19;
     int gridSize = 600;
 
     boolean start = false;
@@ -30,15 +30,17 @@ public class Amaze extends PApplet {
     boolean resetButtonPressed = false;
 
     boolean gameCompleted = false;
-    boolean inventarKey=false;
-    int exitX = 19 * 30;
+    boolean inventarKey = false;
+    int exitX = (19 * 30)+1;
     int exitY = 1 * 30;
+    int keyX = 0;
+    int keyY = 0;
     boolean revealMaze = false;
     boolean restart = false;
     int keyX=0;
     int keyY=0;
 
-    int[][] maze = new int[][] {
+    int[][] maze = new int[][]{
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {5, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 6},
             {1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1},
@@ -69,14 +71,14 @@ public class Amaze extends PApplet {
     int cellSize = 30;
 
     public void settings() {
-        size(gridSize, gridSize+200);
+        size(gridSize, gridSize + 200);
     }
 
     public void setup() {
         playerImg = loadImage("./ressources/knight.png");
-        keyImg=loadImage("./ressources/key.png");
-        doorClosedImg=loadImage("./ressources/doorClosed.jpg");
-        doorOpenImg=loadImage("./ressources/doorOpen.jpg");
+        keyImg = loadImage("./ressources/key.png");
+        doorClosedImg = loadImage("./ressources/doorClosed.jpg");
+        doorOpenImg = loadImage("./ressources/doorOpen.jpg");
         f = createFont("Arial", 16, true);
         winMessage = createFont("./ressources/Gameplay.ttf", 28);
         playerImg.resize(playerSize, 0);
@@ -104,36 +106,36 @@ public class Amaze extends PApplet {
     public void draw() {
         background(255);
 
-            for (int i = 0; i < maze.length; i++) {
-                for (int j = 0; j < maze[i].length; j++) {
-                    if (maze[i][j]==1) {
-                        fill(0); // Draw boundaries in black
-                    } else if (maze[i][j]==4) {
-                        fill(255);
-                        keyX=(j*30)+1;
-                        keyY=i*30;
-                    } else {
-                        fill(255); // Draw open spaces in white
-                    }
-                    noStroke();
-                    rect(j * cellSize, i * cellSize, cellSize, cellSize);
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (maze[i][j] == 1) {
+                    fill(0); // Draw boundaries in black
+                } else if (maze[i][j] == 4) {
+                    fill(255);
+                    keyX = (j * 30) + 1;
+                    keyY = i * 30;
+                } else {
+                    fill(255); // Draw open spaces in white
                 }
+                noStroke();
+                rect(j * cellSize, i * cellSize, cellSize, cellSize);
             }
-            image(playerImg, playerX, playerY);
+        }
+        image(playerImg, playerX, playerY);
 
-            if (!inventarKey) {
-                image(keyImg, keyX, keyY);
-            }
+        if (!inventarKey) {
+            image(keyImg, keyX, keyY);
+        }
 
-            if (inventarKey){
-                image(doorOpenImg,exitX,exitY);
-            }else {
-                image(doorClosedImg, exitX, exitY);
-            }
+        if (inventarKey) {
+            image(doorOpenImg, exitX, exitY);
+        } else {
+            image(doorClosedImg, exitX, exitY);
+        }
 
-            if (playerX==keyX&&playerY==keyY){
-                inventarKey=true;
-            }
+        if (playerX == keyX && playerY == keyY) {
+            inventarKey = true;
+        }
 
 
             float rectX = playerX - gridSize, rectY = playerY - gridSize-200, rectWidth = 2*width, rectHeight = 2*height;
@@ -196,9 +198,18 @@ public class Amaze extends PApplet {
         fill(0, 0, 0);
         text("Reset", 380, 725);
 
-        if (playerX == exitX && playerY == exitY) {
+        if (playerX == exitX && playerY == exitY&& inventarKey) {
             gameCompleted = true;
             revealMaze = true;
+        }else if (playerX == exitX && playerY == exitY && !inventarKey) {
+            textFont(winMessage);
+            textAlign(CENTER, CENTER);
+            fill(255, 215, 0);
+            text("Find the Key first!", width / 2, height / 3);
+
+            textFont(f);
+            textAlign(LEFT, BASELINE);
+            fill(0);
         }
 
         if (gameCompleted) {
@@ -241,7 +252,7 @@ public class Amaze extends PApplet {
                 resetButtonPressed = false;
             }
 
-            if (playerX == exitX && playerY == exitY) {
+            if (playerX == exitX && playerY == exitY &&inventarKey) {
                 gameCompleted = true;
                 System.out.println(revealMaze);
             }
