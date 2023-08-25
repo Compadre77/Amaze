@@ -96,6 +96,7 @@ public class Amaze extends PApplet {
         playerImgLeft = loadImage("./ressources/knight_left.png");
         keyImg = loadImage("./ressources/key.png");
         flashlightImg = loadImage("./ressources/Flashlight.png");
+        visionImg = loadImage("./ressources/vision.png");
         doorClosedImg = loadImage("./ressources/doorClosed.jpg");
         doorOpenImg = loadImage("./ressources/doorOpen.jpg");
         text = createFont("Arial", 16, true);
@@ -106,7 +107,6 @@ public class Amaze extends PApplet {
         doorClosedImg.resize(doorSize, 0);
         doorOpenImg.resize(doorSizeOpen, 0);
         flashlightImg.resize(flashlightSize, 0);
-        visionImg = loadImage("./ressources/vision.png");
         visionImg.resize(playerSize, 20);
         playerX = 1;
         playerY = 30;
@@ -117,8 +117,8 @@ public class Amaze extends PApplet {
     private void extracted() {
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
-                if (maze[i][j]==2||maze[i][j]==3||maze[i][j]==4){
-                    maze[i][j]=0;
+                if (maze[i][j] == 2 || maze[i][j] == 3 || maze[i][j] == 4) {
+                    maze[i][j] = 0;
                 }
             }
         }
@@ -171,14 +171,9 @@ public class Amaze extends PApplet {
         }
 
         if (!inventarKey) {
-            fill(255, 153, 255);
+            fill(240, 230, 140);
             rect(keyX, keyY, cellSize, cellSize);
             image(keyImg, keyX, keyY);
-            tint(255, 128);
-            image(keyImg, 30, 7);
-            tint(255, 255);
-        } else {
-            image(keyImg, 30, 7);
         }
 
         if (inventarKey) {
@@ -192,14 +187,9 @@ public class Amaze extends PApplet {
         }
 
         if (!flashlight) {
-            fill(255, 153, 255);
+            fill(240, 230, 140);
             rect(flashlightX, flashlightY, cellSize, cellSize);
             image(flashlightImg, flashlightX, flashlightY);
-            tint(255, 128);
-            image(flashlightImg, 0, 0);
-            tint(255, 255);
-        } else {
-            image(flashlightImg, 1, 0);
         }
 
         if (playerX == flashlightX && playerY == flashlightY) {
@@ -207,7 +197,7 @@ public class Amaze extends PApplet {
         }
 
         if (!visionActivate) {
-            fill(255, 153, 255);
+            fill(240, 230, 140);
             rect(visionX, visionY, cellSize, cellSize);
             image(visionImg, visionX, visionY);
         }
@@ -340,6 +330,7 @@ public class Amaze extends PApplet {
                 gameCompleted = true;
             }
         }
+        showInventory();
     }
 
     void drawRadialGradient(float x, float y, float w, float h, int c) {
@@ -363,8 +354,9 @@ public class Amaze extends PApplet {
             if (playerX == visionX && playerY == visionY) {
                 revealMaze = true;
                 maze[visionY / 30][(visionX - 1) / 30] = 0;
-                visionX = 0;
-                visionY = 0;
+                visionActivate = false;
+                visionX = -100;
+                visionY = -100;
                 if (!scheduled) {
                     scheduled = true;
                     executorService.schedule(() -> {
@@ -464,5 +456,30 @@ public class Amaze extends PApplet {
             reset = true;
             redraw();
         }
+    }
+
+    public void showInventory() {
+        if (!inventarKey) {
+            tint(255, 128);
+            image(keyImg, 0, 7);
+            tint(255, 255);
+        } else {
+            image(keyImg, 0, 7);
+        }
+        if (!flashlight) {
+            tint(255, 128);
+            image(flashlightImg, 30, 0);
+            tint(255, 255);
+        } else {
+            image(flashlightImg, 30, 0);
+        }
+        if (!visionActivate){
+            tint(255, 128);
+            image(visionImg, 60, 7);
+            tint(255, 255);
+        } else {
+            image(visionImg, 60,7);
+        }
+
     }
 }
