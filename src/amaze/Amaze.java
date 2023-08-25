@@ -309,6 +309,7 @@ public class Amaze extends PApplet {
                     inventarKey = false;
                     flashlight = false;
                     visionActivate = false;
+                    scheduled = false;
                     extracted();
                 }
                 restart = false;
@@ -328,6 +329,7 @@ public class Amaze extends PApplet {
                     inventarKey = false;
                     flashlight = false;
                     visionActivate = false;
+                    scheduled = false;
                     extracted();
                 }
             } else {
