@@ -4,6 +4,7 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,8 +25,10 @@ public class Amaze extends PApplet {
     PFont text;
     PFont winMessage;
 
-    int playerX, playerY;
-    int visionX, visionY;
+    int playerX;
+    int playerY;
+    int visionX;
+    int visionY;
     int speed = 30;
     int playerSize = 30;
     int doorSize = 22;
@@ -33,30 +36,28 @@ public class Amaze extends PApplet {
     int flashlightSize = 30;
     int gridSize = 600;
     boolean isRight = true;
-
     boolean start = false;
     boolean reset = false;
     boolean startButtonPressed = false;
     boolean resetButtonPressed = false;
     boolean visionActivate = false;
     boolean scheduled = false;
-
     boolean gameCompleted = false;
     boolean inventarKey = false;
     boolean flashlight = false;
-
     int exitX = 0;
     int exitY = 0;
     int keyX = 0;
     int keyY = 0;
+    int startX=0;
+    int startY=0;
     int flashlightX = 0;
     int flashlightY = 0;
     boolean revealMaze = false;
     boolean restart = false;
-
+    int cellSize = 30;
+    Random random=new Random();
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-
-
     int[][] maze = new int[][]{
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
             {5, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 6},
@@ -85,8 +86,6 @@ public class Amaze extends PApplet {
     //start=5
     //end=6
 
-    int cellSize = 30;
-
     public void settings() {
         size(gridSize, gridSize + 200);
     }
@@ -108,10 +107,20 @@ public class Amaze extends PApplet {
         doorOpenImg.resize(doorSizeOpen, 0);
         flashlightImg.resize(flashlightSize, 0);
         visionImg.resize(playerSize, 20);
-        playerX = 1;
-        playerY = 30;
 
+        playerstart();
         extracted();
+    }
+
+    private void playerstart() {
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (maze[i][j] == 5) {
+                    playerX = (j * 30) + 1;
+                    playerY = i * 30; //Get the start coordinates
+                }
+            }
+        }
     }
 
     private void extracted() {
@@ -152,7 +161,11 @@ public class Amaze extends PApplet {
                     fill(255);
                     keyX = (j * 30) + 1;
                     keyY = i * 30; //Get the key coordinates
-                } else if (maze[i][j] == 6) {
+                } else if (maze[i][j] == 5) {
+                    fill(255);
+                    startX = (j * 30) + 1;
+                    startY = i * 30; //Get the start coordinates
+                }else if (maze[i][j] == 6) {
                     fill(255);
                     exitX = (j * 30) + 1;
                     exitY = i * 30; //Get the end coordinates
@@ -230,8 +243,8 @@ public class Amaze extends PApplet {
         }
 
         if (reset) {
-            playerX = 1;
-            playerY = 30;
+            playerX = startX;
+            playerY = startY;
             gameCompleted = false;
             reset = false;
         }
@@ -245,7 +258,6 @@ public class Amaze extends PApplet {
         rect(150, 700, 100, 40, 10, 10, 10, 10);
         fill(0, 0, 0);
         text("Start", 180, 725);
-
 
         //End Button
         if (resetButtonPressed) {
@@ -283,7 +295,6 @@ public class Amaze extends PApplet {
             fill(255, 215, 0);
             stroke(0);
             text("You have found the exit!\nCongratulations!", width / 2, height / 3);
-
             textFont(text);
             textAlign(LEFT, BASELINE);
             fill(0);
@@ -292,14 +303,15 @@ public class Amaze extends PApplet {
                 startButtonPressed = true;
                 if (gameCompleted) {
                     reset = true;
-                    playerX = 1;
-                    playerY = 30;
+                    playerX = startX;
+                    playerY = startY;
                     gameCompleted = false;
                     revealMaze = false;
                     inventarKey = false;
                     flashlight = false;
                     visionActivate = false;
                     scheduled = false;
+                    diffrentMaze();
                     extracted();
                 }
                 restart = false;
@@ -311,8 +323,8 @@ public class Amaze extends PApplet {
                 resetButtonPressed = true;
                 if (gameCompleted) {
                     reset = true;
-                    playerX = 1;
-                    playerY = 30;
+                    playerX = startX;
+                    playerY = startY;
                     gameCompleted = false;
                     revealMaze = false;
                     restart = false;
@@ -320,7 +332,6 @@ public class Amaze extends PApplet {
                     flashlight = false;
                     visionActivate = false;
                     scheduled = false;
-                    extracted();
                 }
             } else {
                 resetButtonPressed = false;
@@ -331,6 +342,40 @@ public class Amaze extends PApplet {
             }
         }
         showInventory();
+    }
+
+    private void diffrentMaze() {
+        MazeGenerator mazeGenerator=new MazeGenerator(18);
+        mazeGenerator.generateMaze();
+        int[][] mazenew = mazeGenerator.getMaze();
+        int zahlStart=random.nextInt(1,16);
+        int zahlEnde=random.nextInt(1,16);
+
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (i==0||i==19){
+                    maze[i][j]=1;
+                } else if (j==0||j==19) {
+                    maze[i][j]=1;
+                }else {
+                    maze[i][j]=mazenew[i-1][j-1];
+                }
+            }
+        }
+
+        for (int i = zahlStart; i < maze.length-1; i++) {
+            if (maze[i][1]==0){
+                maze[i][0]=5;
+                break;
+            }
+        }
+
+        for (int i = zahlEnde; i < maze.length-1; i++) {
+            if (maze[i][18]==0){
+                maze[i][19]=6;
+                break;
+            }
+        }
     }
 
     void drawRadialGradient(float x, float y, float w, float h, int c) {
@@ -377,7 +422,6 @@ public class Amaze extends PApplet {
                 for (int j = 0; j < numSegmentsY; j++) {
                     float segmentX = x + i * segmentWidth;
                     float segmentY = y + j * segmentHeight;
-
                     float d = dist(centerX, centerY, segmentX + segmentWidth / 2, segmentY + segmentHeight / 2);
                     float t;
                     if (d < transparentRadius) {
@@ -480,6 +524,5 @@ public class Amaze extends PApplet {
         } else {
             image(visionImg, 60,7);
         }
-
     }
 }
